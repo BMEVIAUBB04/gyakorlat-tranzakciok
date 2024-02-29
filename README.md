@@ -20,7 +20,7 @@ Amit érdemes átnézned:
 
 Felkészülés ellenőrzése:
 
-- A gyakorlatra való felkészüléshez használható [ezen kérdőív](https://forms.office.com/Pages/ResponsePage.aspx?id=q0g1anB1cUKRqFjaAGlwKf73d6yoiM1FuK24ZUEWuzFUOEVCUjFVVUdNS0pYWDI1TUhETkwwNThXMS4u).
+- A gyakorlatra való felkészüléshez használható [ezen kérdőív](https://forms.office.com/e/3By22uEpFH?origin=lprLink).
 - A gyakorlaton beugróként ugyanezen kérdőívet fogjuk használni, legalább 50% elérése szükséges.
   - Gyakorlatvezetői instrukció: a hallgató nyissa meg a kérdőívet és töltse ki. A válaszok megadása után az utolsó oldalon a "View results" gombra kattintva megtekinthető az eredmény és az elért pontszám. A hallgató ezen az oldalon álljon meg és mutassa meg eredményét a gyakorlatvezetőnek.
 
@@ -104,7 +104,7 @@ megváltoztatja a státuszt csomagolváról szállítás alattira.
 ##### Mit tapasztalt? Miért?
 
 <details><summary markdown="span">Magyarázat</summary>
-  
+
 > Kezdetben minden tétel csomagolva státuszban van, ami így konzisztens (nem lehet egy darab tétel postázva, ha a megrendelés nincs postázva). Viszont, amint változatunk a megrendelés állapotán, a csomag státusza ellentmondásosnak látszik a tételek státuszával. Az adatbázis **nem** inkonzisztens, mert a belső szabályai (integritási kritériumai) alapján nincs probléma. De üzleti értelemben ellentmondásos a tartalom.
 >
 > Az SQL Server alapértelmezésben auto commit üzemmódban fut, azaz egy utasítás az egy tranzakció, amit automatikusan lezár. Tehát a probléma, hogy a módosításaink nem egy tranzakciót képeznek.
@@ -123,7 +123,7 @@ Ismételje meg az előző feladatot úgy, hogy a két adatmódosítás egy tranz
 #### Mit tapasztalt? Miért?
 
 <details><summary markdown="span">Magyarázat</summary>
-  
+
 > Amint elkezdtük a státusz módosítását **T2**-ben, a lekérdező **T1**-es utasítás várni fog. Addig vár, amíg az adatmódosító tranzakció be nem fejeződik. Ez azért van, mert a `select` utasítás olvasási zárat akar elhelyezni, de másik tranzakció éppen módosítja az adott rekordot, így kizáró zárat helyezett el rajta.
 >
 > Jegyezzük meg, hogy az alap izolációs szint, a *read committed* ezen a platformon azt jelenti, hogy módosítás alatt levő adat nem olvasható. Ez egy implementációs kérdés, az SQL szabvány ezt nem rögzíti. Más adatbázis platform viselkedhet máshogy is (pl. az Oracle Server biztosítja, hogy a rekordok commitált képe mindenképpen olvasható marad). Más izolációs szinten az MSSQL szerver is máshogy viselkedik, a *snapshot* izolációs szint használata esetén a módosítás megkezdése előtti változat olvasható.
@@ -171,7 +171,7 @@ Kezdjük el lefuttatni az előző parancs sorozatot, a tranzakcióval együtt, d
 #### Mit tapasztalt? Miért?
 
 <details><summary markdown="span">Magyarázat</summary>
-  
+
 > Az előzőekben tapasztaltakhoz hasonlóan a módosítás megkezdte után az olvasó utasítás várakozásra kényszerült. Amikor megszakítottuk a tranzakciót, akkor érkezett meg az eredmény. Mivel *read committed* izolációs szinten vagyunk, nem látjuk a módosítás alatt levő tartalmat. Amint a módosító tranzakció befejeződik, akár sikeres `commit`, akár `rollback` miatt, elérhetővé válnak a rekordok.
 >
 > Vegyük észre, hogy pont elkerültük a piszkos olvasás problémáját. Ha a módosítás futása közben megjelent volna a félkész eredmény, a `rollback` miatt az a tranzakció érvénytelen adattal dolgozna tovább.
@@ -256,7 +256,7 @@ Legyen két párhuzamos tranzakciónk, melyek megrendelést rögzítenek. Egy te
 #### Mit tapasztalt? Miért?
 
 <details><summary markdown="span">Magyarázat</summary>
-  
+
 > Holtpont fog kialakulni, mivel a *serializable* izolációs szint miatt mindkét tranzakció megtiltja a megrendeléstétel tábla módosítását. A `select sum` miatt, és a megismételhető olvasás elvárás miatt a rekordokat olvasó zárral látja el a rendszer. Viszont így nem futhat le a másik tranzakcióban az `insert`, amely kizárólagos zárat igényelne. Ez mindkét tranzakció esetén azt jelenti, hogy a másik által fogott zárra vár.
 >
 > A holtpont eredménye, hogy az egyik tranzakciót le fogja állítani a szerver. Ez elvárt és helyes működést eredményez, mivel megakadályozza, hogy a két tranzakció közt adat egymásrahatás legyen (így nem fordulhat elő, hogy több terméket adunk el, mint amennyi van).
@@ -272,7 +272,7 @@ Ismételjük meg a fenti műveletsort, csak a megrendelés rögzítésekor más-
 #### Mit tapasztalt? Miért?
 
 <details><summary markdown="span">Magyarázat</summary>
-  
+
 > Ha különböző termékre történik a rögzítés, akkor is holtpont fog kialakulni. Olyan a zárolási rendszer, hogy a `select sum` az egész táblát zárolja, mivel nem tudja megkülönböztetni `termekid` szerint a rekordokat. Ez természetes is, mivel csak az üzleti logikából adódik, hogy ha két különböző termékre történik a megrendelés rögzítése, akkor azok történhetnének egyszerre is. Az adatbázis ezt nem tudja.
 >
 > Azaz a *serializable* izolációs szint túl szigorú, üzleti logikát figyelembe véve nagyobb párhuzamosítás engedhető meg. Ezért is ritkán használjuk a gyakorlatban.
@@ -286,7 +286,7 @@ Gondoljuk végig, az előző feladat esetén mi történne, ha a nem állítjuk 
 #### Mit tapasztalt? Miért?
 
 <details><summary markdown="span">Magyarázat</summary>
-  
+
 > Ha nem változtatunk izolációs szintet, akkor helytelen működés állhatna elő. Mivel a *read committed* izolációs szint nem biztosítja számunkra azt, hogy amíg fut a tranzakciónk, addig egy másik tranzakció berögzítsen rekordokat. Tehát lefuthatna az `insert`, ami miatt végeredményben több árut adnánk el, mint ami a raktárban van. Ez a nem megismételhető olvasás problémája.
 >
 > Erről az oldalról nézve tehát a *serializable* izolációs szint nem volt feleslegesen szigorú. Tényleg megvédett minket egy problémától.
@@ -310,7 +310,7 @@ from tablanev with(XLOCK)
 #### Hova kell ezt a zárat elhelyezni? Hogyan néz ki így a megrendelés folyamata?
 
 <details><summary markdown="span">Magyarázat</summary>
-  
+
 > A megoldás kulcsa, hogy jó helyre tegyük a zárat. A kérdés, hogy mit is kellene zárolni? A válasz, hogy a **terméket**: azt akarjuk meggátolni, hogy ugyanabból a termékből rögzíthető legyen még egy eladás. Tehát a termékre, konkrétan a termék táblában arra a sorra tesszük a zárat, ami a terméket reprezentálja.
 >
 > Ennek a megoldásnak a hátránya, hogy nagyon alaposan át kell gondolnunk, hogyan és hol végezzük a zárolást.
@@ -398,7 +398,7 @@ from tablanev with(TABLOCKX)
 #### Bár ez egyszerű megoldásnak tűnik, gondoljuk végig, miért nem érdemes ezt használni!
 
 <details><summary markdown="span">Magyarázat</summary>
-  
+
 > Jelen esetben a tábla szintű zárat a megrendelésekre kellene tennünk, hiszen a konkurens megrendeléseket akarjuk megakadályozni. De ez ugyanazzal az eredménnyel járna, mint a *serializable* izolációs szint használata. Ugyan holtpont nem lenne, de a párhuzamos végrehajtást lehetetlenné tenné. Tehát a tábla szintű zárolásra ugyanaz igaz: az üzleti logikából nagyobb párhuzamosság adódik.
 
 </details>
